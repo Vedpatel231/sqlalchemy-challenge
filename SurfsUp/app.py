@@ -21,14 +21,11 @@ metadata = MetaData()
 metadata.reflect(engine)
 print("Tables in the database:", metadata.tables.keys())
 
-# Save references to each table
-# Check if 'measurement' and 'station' tables are in the reflected tables
-if 'measurement' in Base.classes.keys() and 'station' in Base.classes.keys():
-    Measurement = Base.classes.measurement
-    Station = Base.classes.station
-else:
-    raise Exception("Required tables 'measurement' or 'station' not found in the database")
+if ('measurement' not in Base.classes.keys() or 'station' not in Base.classes.keys()):
+    raise Exception("Tables 'measurement' or 'station' not found")
 
+Measurement = Base.classes.measurement
+Station = Base.classes.station
 # Create our session (link) from Python to the DB
 session = Session(engine)
 
@@ -44,9 +41,7 @@ session = Session(engine)
 #################################################
 @app.route("/")
 def home():
-    """List all available API routes."""
     return (
-        f"Available Routes:<br/>"
         f"/api/v1.0/precipitation<br/>"
         f"/api/v1.0/stations<br/>"
         f"/api/v1.0/tobs<br/>"
@@ -76,24 +71,18 @@ def stations():
 def tobs():
     """Return a list of temperature observations (TOBS) for the last year"""
     # Query the last year of temperature observation data for the most active station
-    # (use your logic from the previous parts of your assignment)
-    # results = ...
-    # Convert list of tuples into normal list
-    # tobs_list = ...
     return jsonify(tobs_list)
 
 @app.route("/api/v1.0/<start>")
 def start(start):
     """Return TMIN, TAVG, TMAX for all dates greater than and equal to the start date"""
-    # (use your logic from the previous parts of your assignment)
-    # results = ...
+    
     return jsonify(results)
 
 @app.route("/api/v1.0/<start>/<end>")
 def start_end(start, end):
     """Return TMIN, TAVG, TMAX for dates between the start and end date inclusive"""
-    # (use your logic from the previous parts of your assignment)
-    # results = ...
+    
     return jsonify(results)
 
 # Define main behavior
